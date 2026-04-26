@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Circle
+from matplotlib.animation import FuncAnimation
 
 
 class World:
@@ -13,8 +14,7 @@ class World:
         else:
             self.landmarks = landmarks
 
-    def draw(self):
-        fig, ax = plt.subplots(figsize=(8, 8))
+    def draw(self, ax):
         ax.set_aspect("equal")
         ax.grid(True)
         ax.set_ylim(-self.height, self.height)
@@ -24,8 +24,6 @@ class World:
         for landmark_x, landmark_y in self.landmarks:
             ax.scatter(landmark_x, landmark_y, s=100, marker="x")
             ax.text(landmark_x + 0.2, landmark_y + 0.2, "Landmark", fontsize=12)
-
-        return fig, ax
 
 
 class Robot:
@@ -63,7 +61,6 @@ class Robot:
 
     def sense(self, world, sensor_noise=0.3):
         observation = []
-
         landmarks = world.landmarks
 
         for landmark_x, landmark_y in landmarks:
@@ -96,7 +93,6 @@ class Particle:
 
     def predictSense(self, world):
         predicted_observations = []
-
         landmarks = world.landmarks
 
         for landmark_x, landmark_y in landmarks:
@@ -132,7 +128,7 @@ def createParticles(number_of_particles, world):
 
 
 def updateParticleWeights(particles, observations, world, sensor_noise):
-    for particle in particles :
+    for particle in particles:
         predicted_observations = particle.predictSense(world)
 
         weight = 1.0
@@ -140,22 +136,25 @@ def updateParticleWeights(particles, observations, world, sensor_noise):
         for predicted_observation, observation in zip(predicted_observations, observations):
             error = observation - predicted_observation
             likelihood = gaussianLikelihood(error, sensor_noise)
-            weight*=likelihood
-        
+            weight *= likelihood
+
         particle.weight = weight
 
-def normalizeParticleWeights(particles) :
+
+def normalizeParticleWeights(particles):
     total_weight = sum(particle.weight for particle in particles)
+
     if total_weight == 0:
         uniform_weight = 1.0 / len(particles)
 
         for particle in particles:
-            particle.weight=uniform_weight
+            particle.weight = uniform_weight
 
         return
-    
+
     for particle in particles:
         particle.weight /= total_weight
+
 
 def resampleParticles(particles):
     weights = [particle.weight for particle in particles]
@@ -183,6 +182,7 @@ def resampleParticles(particles):
 
     return new_particles
 
+
 def main():
     landmarks = [
         (2, 3),
@@ -191,19 +191,41 @@ def main():
     ]
 
     world = World(8, 8, landmarks)
-
     robot = Robot(-6, -6, np.pi / 6, 1)
     particles = createParticles(500, world)
 
     commands = [
-        (1.0, 0.1),
-        (1.0, 0.1),
-        (1.0, -0.2),
-        (1.0, 0.0),
-        (1.0, 0.2),
+        (0.3, 0.03),
+        (0.3, 0.03),
+        (0.3, 0.03),
+        (0.3, 0.03),
+        (0.3, -0.05),
+        (0.3, -0.05),
+        (0.3, -0.05),
+        (0.3, 0.00),
+        (0.3, 0.00),
+        (0.3, 0.00),
+        (0.3, 0.05),
+        (0.3, 0.05),
+        (0.3, 0.05),
+        (0.3, 0.00),
+        (0.3, 0.00),
+        (0.3, 0.00),
+        (0.3, -0.04),
+        (0.3, -0.04),
+        (0.3, -0.04),
+        (0.3, 0.00),
     ]
 
-    for step, (forward, turn) in enumerate(commands, start=1):
+    fig, ax = plt.subplots(figsize=(8, 8))
+
+    def update(frame):
+        nonlocal particles
+
+        ax.clear()
+
+        forward, turn = commands[frame]
+
         robot.move(
             forward=forward,
             motion_noise=0.1,
@@ -232,14 +254,27 @@ def main():
 
         particles = resampleParticles(particles)
 
-        fig, ax = world.draw()
-        robot.makeBody(ax)
+        world.draw(ax)
 
         for particle in particles:
             particle.draw(ax)
 
-        ax.set_title(f"Step {step}: Particle Filter Localization")
-        plt.show()
+        robot.makeBody(ax)
+
+        ax.set_title(f"Step {frame + 1}: Particle Filter Localization")
+
+        print(f"Step {frame + 1}")
+        print("Robot observation:", np.round(observations, 2))
+
+    animation = FuncAnimation(
+        fig,
+        update,
+        frames=len(commands),
+        interval=400,
+        repeat=False,
+    )
+
+    plt.show()
 
 
 if __name__ == "__main__":
