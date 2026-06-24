@@ -1,0 +1,16 @@
+# env/requirements.txt — pinned dependencies for vla-memorization-localization.
+#
+# LeRobot (and its torch pin) is installed separately in env/setup.sh so the
+# heavy GPU stack is explicit. These are the support libraries used across
+# src/vlamem/ (stats, configs, plotting). Pin exact versions before any run
+# that feeds a conclusion — reproducibility is a hard requirement (CLAUDE.md §2).
+
+numpy==1.26.4
+scipy==1.13.1
+pyyaml==6.0.2
+matplotlib==3.9.2
+pandas==2.2.2
+
+# Dev / test
+pytest==8.3.2
+ruff==0.6.4

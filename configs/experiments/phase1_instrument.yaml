@@ -1,0 +1,14 @@
+# configs/experiments/phase1_instrument.yaml — robustness benchmark (publishable floor).
+# Runs the full perturbation profile for SmolVLA with bootstrap CIs.
+defaults: base.yaml
+
+experiment:
+  name: phase1_instrument
+  phase: 1
+
+eval:
+  n_episodes: 50
+
+stats:
+  bootstrap_resamples: 10000
+  ci: 0.95

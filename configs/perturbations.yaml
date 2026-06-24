@@ -1,0 +1,34 @@
+# configs/perturbations.yaml — the perturbation taxonomy, two classes held STRICTLY separate.
+#
+# meaning_changing: the action SHOULD change. A robust model is sensitive here.
+# nuisance:         the action SHOULD NOT change. A robust model is invariant here.
+#
+# The memorization signal is exactly the asymmetry: insensitivity where sensitivity
+# is expected. Keeping the classes separate is what makes that claim valid
+# (construct-validity guard, risk #2). Each axis name maps to a function registered
+# in src/vlamem/perturbations/registry.py.
+
+meaning_changing:
+  - name: object_identity      # swap the target object for a different one
+    severity: high
+  - name: object_pose          # move/rotate the target object
+    severity: medium
+  - name: instruction_semantics  # rewrite the instruction to mean something else
+    severity: high
+
+nuisance:
+  - name: background           # change scene background
+    severity: low
+  - name: lighting             # change lighting / brightness
+    severity: low
+  - name: texture              # retexture surfaces
+    severity: low
+  - name: camera_pose          # jitter camera extrinsics
+    severity: low
+  - name: distractors          # add task-irrelevant objects
+    severity: low
+
+# Minimal-pair settings for Phase 0 (clean vs. exactly-one meaning-changing edit).
+minimal_pairs:
+  n_pairs: 5
+  axis: object_identity

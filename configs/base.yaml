@@ -1,0 +1,26 @@
+# configs/base.yaml — shared defaults. Nothing is hard-coded in src/; every knob lives here.
+# Experiment configs (configs/experiments/*.yaml) override these keys.
+
+model:
+  name: smolvla                       # registry key → src/vlamem/models
+  checkpoint: lerobot/smolvla_base    # HF hub id or local path
+  load_vlm_weights: true
+
+dataset:
+  repo_id: HuggingFaceVLA/libero
+  suites: [libero_spatial, libero_object, libero_goal, libero_10]
+
+env:
+  type: libero
+
+device: cuda                          # cpu | cuda | cuda:0 ...
+dtype: bfloat16
+
+eval:
+  n_episodes: 50
+  max_steps: 400
+
+logging:
+  backend: none                       # none | csv | wandb
+  out_dir: results                    # generated artifacts (gitignored)
+  run_name: null                      # set per experiment; null → derived from config + seed

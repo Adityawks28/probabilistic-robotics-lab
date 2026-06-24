@@ -1,0 +1,32 @@
+# configs/experiments/phase0_pilot.yaml — Go/No-Go pilot (GATES EVERYTHING).
+#
+# Smallest config that exercises the full clean → corrupted → patched loop on a
+# handful of episodes, so the human can run the §4 sanity checks and decide GATE 0.
+# Overrides keys in configs/base.yaml.
+
+defaults: base.yaml
+
+experiment:
+  name: phase0_pilot
+  phase: 0
+
+eval:
+  n_episodes: 20          # ~20 episodes is enough for the pilot signal
+
+perturbations:
+  minimal_pairs:
+    n_pairs: 5
+    axis: object_identity
+
+patching:
+  # Where to read/patch the backbone→expert activation. These hook points MUST be
+  # confirmed interactively with the human (P0.3) before any sweep is trusted.
+  hook_point: null        # e.g. "vlm.encoder.norm_out" — fill after hook discovery
+  donor_strategy: minimal_pair
+
+gate0:
+  # Sanity checks the human must see GREEN before trusting BackboneShare:
+  #   - clean → clean patch recovers ~100%
+  #   - corrupted → corrupted stays broken
+  #   - BackboneShare unit test passes on a hand-checked case
+  require_human_signoff: true
