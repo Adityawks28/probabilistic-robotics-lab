@@ -1,0 +1,14 @@
+# configs/experiments/phase4_generality.yaml — generality (second model).
+# Replicate the core attribution on TinyVLA behind the same base_api.
+defaults: base.yaml
+
+experiment:
+  name: phase4_generality
+  phase: 4
+
+model:
+  name: tinyvla
+  checkpoint: null                    # set to the TinyVLA checkpoint id/path
+
+eval:
+  n_episodes: 50

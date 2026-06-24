@@ -1,0 +1,16 @@
+# configs/experiments/phase2_localization.yaml — core localization (the headline).
+# Four converging methods (M1–M4); M3 (activation patching) is the headline BackboneShare.
+defaults: base.yaml
+
+experiment:
+  name: phase2_localization
+  phase: 2
+
+methods: [representation_sensitivity, oracle_conditioning, activation_patching, cross_swap]
+
+eval:
+  n_episodes: 50
+
+stats:
+  bootstrap_resamples: 10000
+  ci: 0.95

@@ -1,0 +1,11 @@
+# configs/seeds.yaml — the fixed seed set for ALL runs.
+#
+# Determinism is non-negotiable (CLAUDE.md §2): every run takes a seed from this
+# list, applied centrally via src/vlamem/utils/seeding.py. Bootstrap CIs are
+# computed across these seeds × episodes. Do not change these mid-study; add new
+# seeds, never renumber existing ones (reproducibility of past figures).
+
+seeds: [0, 1, 2, 3, 4]
+
+# Seed used for one-off interactive sanity checks / smoke tests.
+sanity_seed: 0

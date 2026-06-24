@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vlamem"
+version = "0.0.1"
+description = "Localizing memorization in efficient VLA models: vision-language backbone vs. flow-matching action expert."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Proprietary" }
+authors = [{ name = "Aditya" }]
+keywords = ["vla", "robotics", "mechanistic-interpretability", "activation-patching", "memorization"]
+
+# Heavy/external deps (lerobot, torch) are installed via env/setup.sh against a
+# pinned image; kept out of here so `pip install -e .` stays light for the package itself.
+dependencies = [
+    "numpy>=1.24",
+    "pyyaml>=6.0",
+    "scipy>=1.10",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "ruff>=0.4",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
